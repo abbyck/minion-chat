@@ -1,0 +1,12 @@
+
+{
+  "service": {
+    "id": "hello-service",
+    "name": "hello-service",
+    "tags": ["minion", "hello"],
+    "port": 5000,
+    "connect": {
+      "sidecar_service": {}
+    }
+  }
+}

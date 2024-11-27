@@ -1,0 +1,56 @@
+# System files
+.DS_Store
+Thumbs.db
+
+# Go build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+*.log
+*.prof
+
+# Terraform files
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Docker
+*.docker
+docker-compose.override.yml
+
+# Vault files
+vault-token
+.vault/
+
+# Packer
+packer_cache/
+packer.log
+
+# AWS keys
+*.pem
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+
+# Ignore compiled binaries
+bin/
+*.o
+
+# Ignore IDE settings
+.vscode/
+.idea/
+*.iml
+
+# Node.js (if included for web interfaces)
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log*

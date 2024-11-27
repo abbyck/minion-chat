@@ -1,0 +1,25 @@
+
+version: "3.9"
+services:
+  consul:
+    image: consul:latest
+    command: agent -dev -client=0.0.0.0 -bind=0.0.0.0 -config-dir=/etc/consul.d
+    ports:
+      - "8500:8500"
+      - "8600:8600"
+    volumes:
+      - ./consul-config:/etc/consul.d
+
+  hello-service:
+    build: ./HelloService
+    environment:
+      - CONSUL_HTTP_ADDR=consul:8500
+    depends_on:
+      - consul
+
+  response-service:
+    build: ./ResponseService
+    environment:
+      - CONSUL_HTTP_ADDR=consul:8500
+    depends_on:
+      - consul

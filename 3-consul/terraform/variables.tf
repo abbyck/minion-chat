@@ -1,0 +1,1 @@
+#No New variables for Consul

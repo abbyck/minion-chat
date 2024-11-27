@@ -1,0 +1,11 @@
+
+version: "3.9"
+services:
+  hello-service:
+    build: ./HelloService
+    ports:
+      - "5000:5000"
+  response-service:
+    build: ./ResponseService
+    ports:
+      - "5001:5001"
