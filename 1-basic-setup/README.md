@@ -227,6 +227,10 @@ Confirm by typing `yes`.
 
 ## Additional Notes
 - If you modify the Go files, rebuild the Docker images and push them to Docker Hub.
+```bash
+docker push your_dockerhub_username/responseservice
+docker push your_dockerhub_username/helloservice
+```
 - Use a consistent naming scheme for your services (e.g., `helloservice:latest` and `responseservice:latest`).
 
 ---
