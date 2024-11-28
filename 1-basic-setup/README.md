@@ -54,14 +54,18 @@ Build Docker images for HelloService and ResponseService.
 #### 3. **Run Docker Containers**
 Run the Docker containers for both services.
 
-1. **Run ResponseService**:
+1. **Create a shared network**:
+    ```bash
+    docker network create offsite
+    ```
+2. **Run ResponseService**:
    ```bash
-   docker run -d -p 5001:5001 --name responseservice responseservice:local
+   docker run -d -p 5001:5001 --network offsite --name responseservice responseservice:local
    ```
 
-2. **Run HelloService**:
+3. **Run HelloService**:
    ```bash
-   docker run -d -p 5000:5000 --name helloservice --link responseservice:responseservice helloservice:local
+   docker run -d -p 5000:5000 -e RESPONSE_SERVICE_HOST=responseservice --network offsite --name helloservice helloservice:local
    ```
 
 #### 4. **Test the Services**

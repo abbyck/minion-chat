@@ -5,10 +5,15 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 )
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-	resp, err := http.Get("http://localhost:5001/response") // Static URL
+	host := os.Getenv("RESPONSE_SERVICE_HOST")
+	if host == "" {
+		host = "localhost"
+	}
+	resp, err := http.Get(fmt.Sprintf("http://%s:5001/response", host)) // Static URL
 	if err != nil {
 		http.Error(w, "Failed to contact ResponseService", http.StatusInternalServerError)
 		return
