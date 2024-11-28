@@ -13,6 +13,10 @@ variable "instance_type" {
   default     = "t2.micro"
 }
 
-variable "key_name" {
-  description = "Key pair for SSH access"
+variable "username" {
+  description = "Your name"
+}
+
+variable "dockerhubhandle" {
+  description = "Your docker hub handle"
 }
