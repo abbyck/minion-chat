@@ -31,6 +31,7 @@ resource "aws_security_group" "minion_chat_sg" {
 
 # HelloService EC2 instance
 resource "aws_instance" "hello_service" {
+  depends_on = [aws_instance.response_service]
   ami           = var.ami_id
   instance_type = var.instance_type
   key_name      = var.key_name
@@ -41,7 +42,7 @@ resource "aws_instance" "hello_service" {
     apt-get install -y docker.io
 
     systemctl start docker
-    docker run -d -p 5000:5000 your_dockerhub_username/helloservice:latest
+    docker run -d -p 5000:5000 -e RESPONSE_SERVICE_HOST=${aws_instance.response_service.public_ip} your_dockerhub_username/helloservice:latest
   EOF
 
   vpc_security_group_ids = [aws_security_group.minion_chat_sg.id]
