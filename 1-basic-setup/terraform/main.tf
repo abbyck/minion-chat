@@ -4,7 +4,7 @@ provider "aws" {
 
 # Security group for HTTP and SSH
 resource "aws_security_group" "minion_chat_security_group" {
-  name        = "minion_chat_security_group"
+  name        = "minion_chat_sg"
   description = "Allow HTTP and SSH traffic"
 
   ingress {
@@ -61,7 +61,7 @@ resource "aws_instance" "response_service" {
     apt-get install -y docker.io
 
     systemctl start docker
-    sudo docker run -d -p 5001:5001 -e your_dockerhub_username/responseservice:latest
+    sudo docker run -d -p 5001:5001 your_dockerhub_username/responseservice:latest
   EOF
 
   vpc_security_group_ids = [aws_security_group.minion_chat_security_group.id]
