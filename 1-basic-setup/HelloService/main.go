@@ -18,6 +18,8 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	var response map[string]string
 	json.NewDecoder(resp.Body).Decode(&response)
 
+	response["hello"] = "Hello from HelloService!"
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
 

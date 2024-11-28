@@ -2,7 +2,12 @@
 # Steps to Run Part 1 (Basic Setup)
 
 ## Overview
-In **Part 1**, we deploy two simple microservices, HelloService and ResponseService, to demonstrate basic inter-service communication. HelloService acts as the primary entry point, handling requests to its /hello endpoint. It fetches a response from ResponseService at its /response endpoint and combines the messages into a single JSON output. HelloService returns a friendly message "Hello from HelloService!" alongside the "Bello from ResponseService!" response received from ResponseService. The two services communicate using static IPs and ports, showcasing the foundational setup for microservices without involving advanced tools like Consul for service discovery or Nomad for orchestration.
+In **Part 1**, we deploy two simple microservices, HelloService and ResponseService, to demonstrate basic inter-service communication. 
+HelloService acts as the primary entry point, handling requests to its /hello endpoint. 
+It fetches a response from ResponseService at its /response endpoint and combines the messages into a single JSON output.
+HelloService returns a friendly message "Hello from HelloService!" alongside the "Bello from ResponseService!" response received from ResponseService.
+The two services communicate using static IPs and ports, showcasing the foundational setup for microservices without involving advanced tools like Consul 
+for service discovery or Nomad for orchestration.
 
 ---
 
