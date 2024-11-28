@@ -43,7 +43,7 @@ resource "aws_instance" "hello_service" {
     sudo usermod -aG docker $USER
 
     sudo systemctl start docker
-    sudo docker run -d -p 5000:5000 -e RESPONSE_SERVICE_HOST=${aws_instance.response_service.public_ip} absolutelightning/helloservice:latest
+    sudo docker run -d -p 5000:5000 -e RESPONSE_SERVICE_HOST=${aws_instance.response_service.public_ip} your_dockerhub_username/helloservice:latest
   EOF
 
   vpc_security_group_ids = [aws_security_group.minion_chat_security_group.id]
@@ -61,7 +61,7 @@ resource "aws_instance" "response_service" {
     apt-get install -y docker.io
 
     systemctl start docker
-    sudo docker run -d -p 5001:5001 -e RESPONSE_SERVICE_HOST=${aws_instance.response_service.public_ip} absolutelightning/responseservice:latest
+    sudo docker run -d -p 5001:5001 -e RESPONSE_SERVICE_HOST=${aws_instance.response_service.public_ip} your_dockerhub_username/responseservice:latest
   EOF
 
   vpc_security_group_ids = [aws_security_group.minion_chat_security_group.id]
