@@ -25,7 +25,7 @@ for service discovery or Nomad for orchestration.
 ## Running Locally
 
 ### **Prerequisites**
-Ensure Docker is installed and running on your machine.
+Ensure Docker is installed along with docker-compose and running on your machine.
 
 ### **Step-by-Step Guide**
 
@@ -33,40 +33,22 @@ Ensure Docker is installed and running on your machine.
 Navigate to the directory containing the `main.go` files for HelloService and ResponseService.
 
 ```bash
-cd Part1-BasicSetup
+cd 1-basic-setup
 ```
 
-#### 2. **Build Docker Images**
+#### 2. **Build and Run Docker Images**
 Build Docker images for HelloService and ResponseService.
 
-1. **Build HelloService**:
-   ```bash
-   cd HelloService
-   DOCKER_DEFAULT_PLATFORM=linux/amd64 docker build -t your_dockerhub_username/helloservice .
-   ```
+```bash
+docker-compose up
+```
 
-2. **Build ResponseService**:
-   ```bash
-   cd ../ResponseService
-   DOCKER_DEFAULT_PLATFORM=linux/amd64 docker build -t your_dockerhub_username/responseservice .
-   ```
+#### 3. **Push Docker Images to Docker Hub**
 
-#### 3. **Run Docker Containers**
-Run the Docker containers for both services.
-
-1. **Create a shared network**:
-    ```bash
-    docker network create offsite
-    ```
-2. **Run ResponseService**:
-   ```bash
-   docker run -d -p 5001:5001 --network offsite --name responseservice responseservice:local
-   ```
-
-3. **Run HelloService**:
-   ```bash
-   docker run -d -p 5000:5000 -e RESPONSE_SERVICE_HOST=responseservice --network offsite --name helloservice helloservice:local
-   ```
+```bash
+DOCKER_DEFAULT_PLATFORM=linux/amd64  docker-compose build
+DOCKER_DEFAULT_PLATFORM=linux/amd64  docker-compose push
+```
 
 #### 4. **Test the Services**
 
@@ -108,13 +90,7 @@ Run the Docker containers for both services.
 #### 6. **Stop and Cleanup**
 To stop and remove the running containers:
 ```bash
-docker stop helloservice responseservice
-docker rm helloservice responseservice
-```
-
-To remove the built images:
-```bash
-docker rmi helloservice:local responseservice:local
+docker-compose stop
 ```
 
 ---
@@ -227,10 +203,6 @@ Confirm by typing `yes`.
 
 ## Additional Notes
 - If you modify the Go files, rebuild the Docker images and push them to Docker Hub.
-```bash
-docker push your_dockerhub_username/responseservice
-docker push your_dockerhub_username/helloservice
-```
 - Use a consistent naming scheme for your services (e.g., `helloservice:latest` and `responseservice:latest`).
 
 ---
