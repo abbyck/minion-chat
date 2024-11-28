@@ -4,7 +4,7 @@ provider "aws" {
 
 # Security group for HTTP and SSH
 resource "aws_security_group" "minion_chat_security_group" {
-  name        = "minion_chat_sg"
+  name        = "minion-chat-sg"
   description = "Allow HTTP and SSH traffic"
 
   ingress {
