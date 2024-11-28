@@ -2,7 +2,12 @@
 # Steps to Run Part 1 (Basic Setup)
 
 ## Overview
-In **Part 1**, we deploy two simple microservices, HelloService and ResponseService, to demonstrate basic inter-service communication. HelloService acts as the primary entry point, handling requests to its /hello endpoint. It fetches a response from ResponseService at its /response endpoint and combines the messages into a single JSON output. HelloService returns a friendly message "Hello from HelloService!" alongside the "Bello from ResponseService!" response received from ResponseService. The two services communicate using static IPs and ports, showcasing the foundational setup for microservices without involving advanced tools like Consul for service discovery or Nomad for orchestration.
+In **Part 1**, we deploy two simple microservices, HelloService and ResponseService, to demonstrate basic inter-service communication. 
+HelloService acts as the primary entry point, handling requests to its /hello endpoint. 
+It fetches a response from ResponseService at its /response endpoint and combines the messages into a single JSON output.
+HelloService returns a friendly message "Hello from HelloService!" alongside the "Bello from ResponseService!" response received from ResponseService.
+The two services communicate using static IPs and ports, showcasing the foundational setup for microservices without involving advanced tools like Consul 
+for service discovery or Nomad for orchestration.
 
 ---
 
@@ -37,26 +42,30 @@ Build Docker images for HelloService and ResponseService.
 1. **Build HelloService**:
    ```bash
    cd HelloService
-   docker build -t helloservice:local .
+   DOCKER_DEFAULT_PLATFORM=linux/amd64 docker build -t your_dockerhub_username/helloservice .
    ```
 
 2. **Build ResponseService**:
    ```bash
    cd ../ResponseService
-   docker build -t responseservice:local .
+   DOCKER_DEFAULT_PLATFORM=linux/amd64 docker build -t your_dockerhub_username/responseservice .
    ```
 
 #### 3. **Run Docker Containers**
 Run the Docker containers for both services.
 
-1. **Run ResponseService**:
+1. **Create a shared network**:
+    ```bash
+    docker network create offsite
+    ```
+2. **Run ResponseService**:
    ```bash
-   docker run -d -p 5001:5001 --name responseservice responseservice:local
+   docker run -d -p 5001:5001 --network offsite --name responseservice responseservice:local
    ```
 
-2. **Run HelloService**:
+3. **Run HelloService**:
    ```bash
-   docker run -d -p 5000:5000 --name helloservice --link responseservice:responseservice helloservice:local
+   docker run -d -p 5000:5000 -e RESPONSE_SERVICE_HOST=responseservice --network offsite --name helloservice helloservice:local
    ```
 
 #### 4. **Test the Services**
@@ -218,6 +227,10 @@ Confirm by typing `yes`.
 
 ## Additional Notes
 - If you modify the Go files, rebuild the Docker images and push them to Docker Hub.
+```bash
+docker push your_dockerhub_username/responseservice
+docker push your_dockerhub_username/helloservice
+```
 - Use a consistent naming scheme for your services (e.g., `helloservice:latest` and `responseservice:latest`).
 
 ---

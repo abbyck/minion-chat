@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 # Security group for HTTP and SSH
-resource "aws_security_group" "minion_chat_sg" {
+resource "aws_security_group" "minion_chat_security_group" {
   name        = "minion-chat-sg"
   description = "Allow HTTP and SSH traffic"
 
@@ -31,20 +31,22 @@ resource "aws_security_group" "minion_chat_sg" {
 
 # HelloService EC2 instance
 resource "aws_instance" "hello_service" {
+  depends_on = [aws_instance.response_service]
   ami           = var.ami_id
   instance_type = var.instance_type
   key_name      = var.key_name
 
   user_data = <<-EOF
     #!/bin/bash
-    apt-get update -y
-    apt-get install -y docker.io
+    sudo apt-get update -y
+    sudo apt-get install -y docker.io
+    sudo usermod -aG docker $USER
 
-    systemctl start docker
-    docker run -d -p 5000:5000 your_dockerhub_username/helloservice:latest
+    sudo systemctl start docker
+    sudo docker run -d -p 5000:5000 -e RESPONSE_SERVICE_HOST=${aws_instance.response_service.public_ip} your_dockerhub_username/helloservice:latest
   EOF
 
-  vpc_security_group_ids = [aws_security_group.minion_chat_sg.id]
+  vpc_security_group_ids = [aws_security_group.minion_chat_security_group.id]
 }
 
 # ResponseService EC2 instance
@@ -55,12 +57,12 @@ resource "aws_instance" "response_service" {
 
   user_data = <<-EOF
     #!/bin/bash
-    apt-get update -y
-    apt-get install -y docker.io
+    sudo apt-get update -y
+    sudo apt-get install -y docker.io
 
-    systemctl start docker
-    docker run -d -p 5001:5001 your_dockerhub_username/responseservice:latest
+    sudo systemctl start docker
+    sudo docker run -d -p 5001:5001 your_dockerhub_username/responseservice:latest
   EOF
 
-  vpc_security_group_ids = [aws_security_group.minion_chat_sg.id]
+  vpc_security_group_ids = [aws_security_group.minion_chat_security_group.id]
 }
