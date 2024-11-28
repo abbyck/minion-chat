@@ -42,13 +42,13 @@ Build Docker images for HelloService and ResponseService.
 1. **Build HelloService**:
    ```bash
    cd HelloService
-   docker build -t helloservice:local .
+   DOCKER_DEFAULT_PLATFORM=linux/amd64 docker build -t your_dockerhub_username/helloservice .
    ```
 
 2. **Build ResponseService**:
    ```bash
    cd ../ResponseService
-   docker build -t responseservice:local .
+   DOCKER_DEFAULT_PLATFORM=linux/amd64 docker build -t your_dockerhub_username/responseservice .
    ```
 
 #### 3. **Run Docker Containers**
