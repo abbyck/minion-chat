@@ -16,3 +16,7 @@ variable "instance_type" {
 variable "key_name" {
   description = "Key pair for SSH access"
 }
+
+variable "username" {
+  description = "Your name"
+}

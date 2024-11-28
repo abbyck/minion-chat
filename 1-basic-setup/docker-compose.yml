@@ -1,10 +1,15 @@
-version: "3.9"
 services:
   hello-service:
+    image: your_dockerhub_username/helloservice:latest
+    container_name: helloservice
     build: ./HelloService
+    environment:
+      RESPONSE_SERVICE_HOST: responseservice
     ports:
       - "5000:5000"
   response-service:
+    image: your_dockerhub_username/responseservice:latest
+    container_name: responseservice
     build: ./ResponseService
     ports:
       - "5001:5001"
