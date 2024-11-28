@@ -57,10 +57,10 @@ resource "aws_instance" "response_service" {
 
   user_data = <<-EOF
     #!/bin/bash
-    apt-get update -y
-    apt-get install -y docker.io
+    sudo apt-get update -y
+    sudo apt-get install -y docker.io
 
-    systemctl start docker
+    sudo systemctl start docker
     sudo docker run -d -p 5001:5001 your_dockerhub_username/responseservice:latest
   EOF
 
