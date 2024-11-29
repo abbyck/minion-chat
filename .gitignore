@@ -54,3 +54,5 @@ node_modules/
 npm-debug.log
 yarn-error.log
 yarn-debug.log*
+
+6-leadboard/backend/node_modules
