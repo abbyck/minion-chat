@@ -1,6 +1,6 @@
 services:
   hello-service:
-    image: your_dockerhub_username/helloservice:latest
+    image: ${DOCKERHUB_ID}/helloservice:latest
     container_name: helloservice
     build: ./HelloService
     environment:
@@ -8,7 +8,7 @@ services:
     ports:
       - "5000:5000"
   response-service:
-    image: your_dockerhub_username/responseservice:latest
+    image: ${DOCKERHUB_ID}/responseservice:latest
     container_name: responseservice
     build: ./ResponseService
     ports:

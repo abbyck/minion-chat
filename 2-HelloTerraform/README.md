@@ -13,50 +13,70 @@ for service discovery or Nomad for orchestration.
 
 ## Prerequisites
 1. **Tools Installed**:
-   - Docker and Docker Compose(For local setup)
+   - Terraform CLI
    - jq cli `brew install jq`
+2. **AWS Setup** (For AWS deployment):
+   - An AWS account with access keys configured.
+3. **Docker Images**
+   - Docker images compiled in last activity and available on docker-hub
 
 ---
 
-## Running Locally
+## Running on AWS
 
 ### **Prerequisites**
-Ensure Docker is installed along with docker-compose and running on your machine.
+
 
 ```sh
-export DOCKERHUB_ID=<dockerhub-id>
-curl -L https://hub.docker.com/v2/orgs/$DOCKERHUB_ID | jq
+export TF_VAR_dockerhub_id=<dockerhub-id>
+curl -L https://hub.docker.com/v2/orgs/$TF_VAR_dockerhub_id | jq
 # make sure you see your account information in resposne
-
-# set the AWS credentials from doormat (Note: These credentials are short lived hence you may need to redo this steps)
-export AWS_ACCESS_KEY_ID=REDACTED
-export AWS_SECRET_ACCESS_KEY=REDACTED
-export AWS_SESSION_TOKEN=REDACTED
-                  
 ```
+
+---
+
+## Running on AWS
 
 ### **Step-by-Step Guide**
 
-#### 1. **Navigate to the Project Directory**
-Navigate to the directory
-
+### 1. **Navigate to the project folder**
 ```bash
 cd 2-HelloTerraform
 ```
 
-#### 2. **Build and Run Docker Images**
-Build Docker images for HelloService and ResponseService.
+---
 
+### 2. **Initialize Terraform**
+Run the following command to download required providers:
 ```bash
 terraform init
 ```
 
-#### 3. **Test the Services**
+---
 
+### 2. **Deploy HelloService and ResponseService**
+Use Terraform to apply the infrastructure configuration:
+```bash
+terraform apply
+```
+
+Review the changes and type `yes` to confirm.
+
+---
+
+### 6. **Access the Services**
+Once deployment is complete, Terraform will output the cli commands for both services:
+
+Example Output:
+```plaintext
+hello_service_cli = "curl http://<hello-service-dns>:5000/hello | jq"
+response_service_cli = "curl http://<response-service-public-ip>:5001/response | jq"
+```
+
+Test the services using `curl`:
 1. **Test HelloService**:
-   Open a terminal and run:
    ```bash
-   curl http://localhost:5000/hello | jq
+   curl http://<hello-service-public-ip>:5000/hello | jq
    ```
    Expected Output:
    ```json
@@ -67,9 +87,8 @@ terraform init
    ```
 
 2. **Test ResponseService**:
-   Open a terminal and run:
    ```bash
-   curl http://localhost:5001/response | jq
+   curl http://<response-service-public-ip>:5001/response | jq
    ```
    Expected Output:
    ```json
@@ -78,28 +97,44 @@ terraform init
    }
    ```
 
-#### 4. **Verify and Debug**
-- Check the running Docker containers:
+---
+
+### 7. **Verify and Debug**
+- **Logs**:
+  SSH into the instances using your key pair to view logs:
   ```bash
-  docker ps
+  # reference `ssh_hello_service` in terrform output
+  ssh -i minion-key.pem ubuntu@<hello-service-public-ip>
   ```
-- View container logs:
+
+  Check the logs:
   ```bash
-  docker logs <container-id>
+  sudo docker logs hello_service
+  > HelloService running on port 5000...
+
+  sudo docker exec -it hello_service /bin/printenv | grep RESPONSE_SERVICE_HOST
+  > RESPONSE_SERVICE_HOST=**.**.**.**
+
+  # Observe that IP is same as `response_service` public IP
   ```
 
-#### 5. **Stop and Cleanup**
-To stop and remove the running containers:
-```bash
-docker-compose stop
-```
+- **Connectivity**:
+  Ensure HelloService can reach ResponseService via the specified static IP.
 
-#### 6. **Push Docker Images to Docker Hub**
+---
 
+### 8. **Cleanup**
+To remove the infrastructure, use Terraform:
 ```bash
-DOCKER_DEFAULT_PLATFORM=linux/amd64  docker-compose build
-DOCKER_DEFAULT_PLATFORM=linux/amd64  docker-compose push
+terraform destroy
 ```
+Confirm by typing `yes`.
+
+---
+
+## Additional Notes
+- If you modify the Go files, rebuild the Docker images and push them to Docker Hub.
+- Use a consistent naming scheme for your services (e.g., `helloservice:latest` and `responseservice:latest`).
 
 ---
 
