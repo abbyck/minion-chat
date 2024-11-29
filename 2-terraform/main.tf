@@ -53,19 +53,25 @@ resource "aws_security_group" "minion_chat_security_group" {
 
 # HelloService EC2 instance
 resource "aws_instance" "hello_service" {
-  depends_on = [aws_instance.response_service]
+  depends_on    = [aws_instance.response_service]
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
   key_name      = aws_key_pair.minion-key.key_name
 
   user_data = <<-EOF
     #!/bin/bash
-    sudo apt-get update -y
-    sudo apt-get install -y docker.io
+    apt-get update -y
+    apt-get install -y docker.io
 
-    sudo systemctl start docker
-    sudo docker run -d -p 5000:5000 -e RESPONSE_SERVICE_HOST=${aws_instance.response_service.public_ip} ${var.dockerhubhandle}/helloservice:latest
+    systemctl start docker
+    docker run -d --name 'hello_service' -p 5000:5000 -e RESPONSE_SERVICE_HOST=${aws_instance.response_service.public_ip} ${var.dockerhub_id}/helloservice:latest
   EOF
+
+  tags = merge(
+    {
+      "Name" = "minion-chat-hello-service"
+    }
+  )
 
   vpc_security_group_ids = [aws_security_group.minion_chat_security_group.id]
 }
@@ -78,12 +84,18 @@ resource "aws_instance" "response_service" {
 
   user_data = <<-EOF
     #!/bin/bash
-    sudo apt-get update -y
-    sudo apt-get install -y docker.io
+    apt-get update -y
+    apt-get install -y docker.io
 
-    sudo systemctl start docker
-    sudo docker run -d -p 5001:5001 ${var.dockerhubhandle}/responseservice:latest
+    systemctl start docker
+    docker run -d --name 'response_service' -p 5001:5001 ${var.dockerhub_id}/responseservice:latest
   EOF
+
+  tags = merge(
+    {
+      "Name" = "minion-chat-response-service"
+    }
+  )
 
   vpc_security_group_ids = [aws_security_group.minion_chat_security_group.id]
 }
