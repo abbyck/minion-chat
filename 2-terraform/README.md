@@ -13,86 +13,29 @@ for service discovery or Nomad for orchestration.
 
 ## Prerequisites
 1. **Tools Installed**:
-   - Docker and Docker Compose(For local setup)
+   - Terraform CLI
    - jq cli `brew install jq`
-   - Terraform (For AWS deployment)
-   - AWS CLI (For AWS deployment)
 2. **AWS Setup** (For AWS deployment):
    - An AWS account with access keys configured.
-   - A key pair created in your AWS region for SSH access to EC2 instances.
+3. **Docker Images**
+   - Docker images compiled in last activity and available on docker-hub
 
 ---
 
-## Running Locally
+## Running on AWS
 
 ### **Prerequisites**
-Ensure Docker is installed along with docker-compose and running on your machine.
 
-### **Step-by-Step Guide**
+```sh
+export TF_VAR_dockerhub_id=<dockerhub-id>
+curl -L https://hub.docker.com/v2/orgs/$TF_VAR_dockerhub_id | jq
+# make sure you see your account information in resposne
 
-#### 1. **Navigate to the Project Directory**
-Navigate to the directory containing the `main.go` files for HelloService and ResponseService.
-
-```bash
-cd 1-basic-setup
-```
-
-#### 2. **Build and Run Docker Images**
-Build Docker images for HelloService and ResponseService.
-
-```bash
-docker-compose up
-```
-
-#### 3. **Test the Services**
-
-1. **Test HelloService**:
-   Open a terminal and run:
-   ```bash
-   curl http://localhost:5000/hello | jq
-   ```
-   Expected Output:
-   ```json
-   {
-       "message": "Hello from HelloService!",
-       "response_message": "Bello from ResponseService!"
-   }
-   ```
-
-2. **Test ResponseService**:
-   Open a terminal and run:
-   ```bash
-   curl http://localhost:5001/response | jq
-   ```
-   Expected Output:
-   ```json
-   {
-       "message": "Bello from ResponseService!"
-   }
-   ```
-
-#### 4. **Verify and Debug**
-- Check the running Docker containers:
-  ```bash
-  docker ps
-  ```
-- View container logs:
-  ```bash
-  docker logs <container-id>
-  ```
-
-#### 5. **Stop and Cleanup**
-To stop and remove the running containers:
-```bash
-docker-compose stop
-```
-
-#### 6. **Push Docker Images to Docker Hub**
-
-```bash
-sed -i '' 's/your_dockerhub_username/<dockerhub-id>/' docker-compose.yml
-DOCKER_DEFAULT_PLATFORM=linux/amd64  docker-compose build
-DOCKER_DEFAULT_PLATFORM=linux/amd64  docker-compose push
+# set the AWS credentials from doormat (Note: These credentials are short lived hence you may need to redo this steps)
+export AWS_ACCESS_KEY_ID=REDACTED
+export AWS_SECRET_ACCESS_KEY=REDACTED
+export AWS_SESSION_TOKEN=REDACTED
+                  
 ```
 
 ---
@@ -101,31 +44,14 @@ DOCKER_DEFAULT_PLATFORM=linux/amd64  docker-compose push
 
 ### **Step-by-Step Guide**
 
-### 1. **Clone the Repo or Set Up Files**
-Ensure you have the required Terraform files and Go files for HelloService and ResponseService. If you already have a zip file, extract it.
-
-### 2. **Navigate to Part 1 Directory**
+### 1. **Navigate to the project folder**
 ```bash
-cd Part1-BasicSetup
+cd 2-terraform
 ```
 
 ---
 
-### 3. **Prepare Terraform Files**
-
-#### **Edit `variables.tf`**
-Update the following variables:
-1. **AWS Region**:
-   - Ensure the region matches where you want to deploy resources.
-2. **AMI ID**:
-   - Use a valid Ubuntu AMI for your region.
-   - Example for `us-east-1`: `ami-0c02fb55956c7d316`.
-3. **Key Name**:
-   - Provide the name of your existing AWS key pair (e.g., `my-key-pair`).
-
----
-
-### 4. **Initialize Terraform**
+### 2. **Initialize Terraform**
 Run the following command to download required providers:
 ```bash
 terraform init
@@ -133,7 +59,7 @@ terraform init
 
 ---
 
-### 5. **Deploy HelloService and ResponseService**
+### 2. **Deploy HelloService and ResponseService**
 Use Terraform to apply the infrastructure configuration:
 ```bash
 terraform apply
@@ -144,18 +70,18 @@ Review the changes and type `yes` to confirm.
 ---
 
 ### 6. **Access the Services**
-Once deployment is complete, Terraform will output the public IP addresses for both services:
+Once deployment is complete, Terraform will output the cli commands for both services:
 
 Example Output:
 ```plaintext
-hello_service_url = "http://<hello-service-public-ip>:5000/hello"
-response_service_url = "http://<response-service-public-ip>:5001/response"
+hello_service_cli = "curl http://<hello-service-dns>:5000/hello | jq"
+response_service_cli = "curl http://<response-service-public-ip>:5001/response | jq"
 ```
 
 Test the services using `curl`:
 1. **Test HelloService**:
    ```bash
-   curl http://<hello-service-public-ip>:5000/hello
+   curl http://<hello-service-public-ip>:5000/hello | jq
    ```
    Expected Output:
    ```json
@@ -167,7 +93,7 @@ Test the services using `curl`:
 
 2. **Test ResponseService**:
    ```bash
-   curl http://<response-service-public-ip>:5001/response
+   curl http://<response-service-public-ip>:5001/response | jq
    ```
    Expected Output:
    ```json
@@ -182,11 +108,19 @@ Test the services using `curl`:
 - **Logs**:
   SSH into the instances using your key pair to view logs:
   ```bash
-  ssh -i <path-to-key.pem> ubuntu@<hello-service-public-ip>
+  # reference `ssh_hello_service` in terrform output
+  ssh -i minion-key.pem ubuntu@<hello-service-public-ip>
   ```
+
   Check the logs:
   ```bash
-  sudo docker logs <container-id>
+  sudo docker logs hello_service
+  > HelloService running on port 5000...
+
+  sudo docker exec -it hello_service /bin/printenv | grep RESPONSE_SERVICE_HOST
+  > RESPONSE_SERVICE_HOST=**.**.**.**
+
+  # Observe that IP is same as `response_service` public IP
   ```
 
 - **Connectivity**:

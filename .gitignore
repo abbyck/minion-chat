@@ -54,3 +54,10 @@ node_modules/
 npm-debug.log
 yarn-error.log
 yarn-debug.log*
+
+# Hello Terraform
+2-terraform/.terraform
+2-terraform/terraform.tfstate
+2-terraform/terraform.tfstate.backup
+2-terraform/.terraform.lock.hcl
+2-terraform/*.pem
