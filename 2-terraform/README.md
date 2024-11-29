@@ -26,11 +26,16 @@ for service discovery or Nomad for orchestration.
 
 ### **Prerequisites**
 
-
 ```sh
 export TF_VAR_dockerhub_id=<dockerhub-id>
 curl -L https://hub.docker.com/v2/orgs/$TF_VAR_dockerhub_id | jq
 # make sure you see your account information in resposne
+
+# set the AWS credentials from doormat (Note: These credentials are short lived hence you may need to redo this steps)
+export AWS_ACCESS_KEY_ID=REDACTED
+export AWS_SECRET_ACCESS_KEY=REDACTED
+export AWS_SESSION_TOKEN=REDACTED
+                  
 ```
 
 ---
@@ -41,7 +46,7 @@ curl -L https://hub.docker.com/v2/orgs/$TF_VAR_dockerhub_id | jq
 
 ### 1. **Navigate to the project folder**
 ```bash
-cd 2-HelloTerraform
+cd 2-terraform
 ```
 
 ---

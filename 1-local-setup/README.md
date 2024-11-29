@@ -27,28 +27,22 @@ Ensure Docker is installed along with docker-compose and running on your machine
 export DOCKERHUB_ID=<dockerhub-id>
 curl -L https://hub.docker.com/v2/orgs/$DOCKERHUB_ID | jq
 # make sure you see your account information in resposne
-
-# set the AWS credentials from doormat (Note: These credentials are short lived hence you may need to redo this steps)
-export AWS_ACCESS_KEY_ID=REDACTED
-export AWS_SECRET_ACCESS_KEY=REDACTED
-export AWS_SESSION_TOKEN=REDACTED
-                  
 ```
 
 ### **Step-by-Step Guide**
 
 #### 1. **Navigate to the Project Directory**
-Navigate to the directory
+Navigate to the directory containing the `main.go` files for HelloService and ResponseService.
 
 ```bash
-cd 2-HelloTerraform
+cd 1-local-setup
 ```
 
 #### 2. **Build and Run Docker Images**
 Build Docker images for HelloService and ResponseService.
 
 ```bash
-terraform init
+docker-compose up
 ```
 
 #### 3. **Test the Services**
