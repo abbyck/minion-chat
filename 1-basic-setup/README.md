@@ -13,7 +13,8 @@ for service discovery or Nomad for orchestration.
 
 ## Prerequisites
 1. **Tools Installed**:
-   - Docker (For local setup)
+   - Docker and Docker Compose(For local setup)
+   - jq cli `brew install jq`
    - Terraform (For AWS deployment)
    - AWS CLI (For AWS deployment)
 2. **AWS Setup** (For AWS deployment):
@@ -43,19 +44,12 @@ Build Docker images for HelloService and ResponseService.
 docker-compose up
 ```
 
-#### 3. **Push Docker Images to Docker Hub**
-
-```bash
-DOCKER_DEFAULT_PLATFORM=linux/amd64  docker-compose build
-DOCKER_DEFAULT_PLATFORM=linux/amd64  docker-compose push
-```
-
-#### 4. **Test the Services**
+#### 3. **Test the Services**
 
 1. **Test HelloService**:
    Open a terminal and run:
    ```bash
-   curl http://localhost:5000/hello
+   curl http://localhost:5000/hello | jq
    ```
    Expected Output:
    ```json
@@ -68,7 +62,7 @@ DOCKER_DEFAULT_PLATFORM=linux/amd64  docker-compose push
 2. **Test ResponseService**:
    Open a terminal and run:
    ```bash
-   curl http://localhost:5001/response
+   curl http://localhost:5001/response | jq
    ```
    Expected Output:
    ```json
@@ -77,7 +71,7 @@ DOCKER_DEFAULT_PLATFORM=linux/amd64  docker-compose push
    }
    ```
 
-#### 5. **Verify and Debug**
+#### 4. **Verify and Debug**
 - Check the running Docker containers:
   ```bash
   docker ps
@@ -87,10 +81,18 @@ DOCKER_DEFAULT_PLATFORM=linux/amd64  docker-compose push
   docker logs <container-id>
   ```
 
-#### 6. **Stop and Cleanup**
+#### 5. **Stop and Cleanup**
 To stop and remove the running containers:
 ```bash
 docker-compose stop
+```
+
+#### 6. **Push Docker Images to Docker Hub**
+
+```bash
+sed -i '' 's/your_dockerhub_username/<dockerhub-id>/' docker-compose.yml
+DOCKER_DEFAULT_PLATFORM=linux/amd64  docker-compose build
+DOCKER_DEFAULT_PLATFORM=linux/amd64  docker-compose push
 ```
 
 ---
