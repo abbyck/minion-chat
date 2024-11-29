@@ -8,10 +8,6 @@ variable "instance_type" {
   default     = "t2.micro"
 }
 
-variable "username" {
-  description = "Your name"
-}
-
-variable "dockerhubhandle" {
+variable "dockerhub_id" {
   description = "Your docker hub handle"
 }
