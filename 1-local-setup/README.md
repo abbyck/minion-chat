@@ -91,7 +91,6 @@ docker-compose stop
 #### 6. **Push Docker Images to Docker Hub**
 
 ```bash
-sed -i '' 's/your_dockerhub_username/<dockerhub-id>/' docker-compose.yml
 DOCKER_DEFAULT_PLATFORM=linux/amd64  docker-compose build
 DOCKER_DEFAULT_PLATFORM=linux/amd64  docker-compose push
 ```
