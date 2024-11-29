@@ -53,11 +53,11 @@ resource "aws_instance" "hello_service" {
 
   user_data = <<-EOF
     #!/bin/bash
-    sudo apt-get update -y
-    sudo apt-get install -y docker.io
+    apt-get update -y
+    apt-get install -y docker.io
 
-    sudo systemctl start docker
-    sudo docker run -d --name 'hello_service' -p 5000:5000 -e RESPONSE_SERVICE_HOST=${aws_instance.response_service.public_ip} ${var.dockerhub_id}/helloservice:latest
+    systemctl start docker
+    docker run -d --name 'hello_service' -p 5000:5000 -e RESPONSE_SERVICE_HOST=${aws_instance.response_service.public_ip} ${var.dockerhub_id}/helloservice:latest
   EOF
 
   tags = merge(
@@ -77,11 +77,11 @@ resource "aws_instance" "response_service" {
 
   user_data = <<-EOF
     #!/bin/bash
-    sudo apt-get update -y
-    sudo apt-get install -y docker.io
+    apt-get update -y
+    apt-get install -y docker.io
 
-    sudo systemctl start docker
-    sudo docker run -d --name 'response_service' -p 5001:5001 ${var.dockerhub_id}/responseservice:latest
+    systemctl start docker
+    docker run -d --name 'response_service' -p 5001:5001 ${var.dockerhub_id}/responseservice:latest
   EOF
 
   tags = merge(

@@ -24,8 +24,8 @@ for service discovery or Nomad for orchestration.
 Ensure Docker is installed along with docker-compose and running on your machine.
 
 ```sh
-export DOCKERHUB_ID=<dockerhub-id>
-curl -L https://hub.docker.com/v2/orgs/$DOCKERHUB_ID | jq
+export TF_VAR_dockerhub_id=<dockerhub-id>
+curl -L https://hub.docker.com/v2/orgs/$TF_VAR_dockerhub_id | jq
 # make sure you see your account information in resposne
 ```
 
@@ -50,7 +50,7 @@ docker-compose up
 1. **Test HelloService**:
    Open a terminal and run:
    ```bash
-   curl http://localhost:5000/hello | jq
+   curl http://localhost:9999/hello | jq
    ```
    Expected Output:
    ```json
@@ -91,6 +91,7 @@ docker-compose stop
 #### 6. **Push Docker Images to Docker Hub**
 
 ```bash
+sed -i '' 's/your_dockerhub_username/<dockerhub-id>/' docker-compose.yml
 DOCKER_DEFAULT_PLATFORM=linux/amd64  docker-compose build
 DOCKER_DEFAULT_PLATFORM=linux/amd64  docker-compose push
 ```
