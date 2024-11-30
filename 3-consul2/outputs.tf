@@ -4,7 +4,11 @@ output "hello_service_url" {
 }
 
 output "response_service_url" {
-  value = "http://${aws_instance.response_service.public_ip}:5001/response"
+    value = <<CONFIGURATION
+    http://${aws_instance.response_service[0].public_ip}:5001/response
+    http://${aws_instance.response_service[1].public_ip}:5001/response
+    CONFIGURATION
+
 }
 
 output "consul_ui_url" {

@@ -132,6 +132,7 @@ resource "aws_instance" "hello_service" {
 
 # Update ResponseService to register with Consul
 resource "aws_instance" "response_service" {
+  count = 2
   depends_on = [aws_instance.consul]
   ami           = var.ami
   instance_type = var.instance_type
@@ -141,7 +142,7 @@ resource "aws_instance" "response_service" {
   # ConsulAutoJoin is necessary for nodes to automatically join the cluster
   tags = merge(
     {
-      "Name" = "${var.name_prefix}-response-service-1"
+      "Name" = "${var.name_prefix}-response-service-${count.index}"
     },
     {
       "ConsulAutoJoin" = "auto-join"

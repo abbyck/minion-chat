@@ -5,10 +5,17 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 )
 
 func responseHandler(w http.ResponseWriter, r *http.Request) {
-	response := map[string]string{"response_message": "Bello from ResponseService!"}
+	message := "Bello from ResponseService!"
+	// Check if the environment variable INSTANCE_ID is set
+	if instanceID := os.Getenv("INSTANCE_ID"); instanceID != "" {
+		message = fmt.Sprintf("Bello from ResponseService %s!", instanceID)
+	}
+
+	response := map[string]string{"response_message": message}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
