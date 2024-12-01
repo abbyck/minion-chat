@@ -45,3 +45,6 @@ echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://
 
 # Install Consul only
 sudo apt-get update && sudo apt-get -y install consul=$CONSULVERSION*
+
+sudo docker image pull $DOCKERHUB_ID/helloservice:latest
+sudo docker image pull $DOCKERHUB_ID/responseservice:latest

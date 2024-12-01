@@ -27,3 +27,8 @@ variable "name_prefix" {
   description = "Prefix used to name various infrastructure components. Alphanumeric characters only."
   default     = "minion"
 }
+
+variable "response_service_count" {
+  description = "Number of response service instances to create"
+  default     = 1
+}

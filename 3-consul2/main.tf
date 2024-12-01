@@ -132,7 +132,7 @@ resource "aws_instance" "hello_service" {
 
 # Update ResponseService to register with Consul
 resource "aws_instance" "response_service" {
-  count = 2
+  count = var.response_service_count
   depends_on = [aws_instance.consul]
   ami           = var.ami
   instance_type = var.instance_type

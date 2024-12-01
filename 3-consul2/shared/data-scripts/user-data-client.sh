@@ -19,7 +19,7 @@ INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" http://instance-data/la
 if [ "${application_name}" = "hello-service" ]; then
   sudo docker run -d --name ${application_name} --network=host -e RESPONSE_SERVICE_HOST=response-service.service.consul ${dockerhub_id}/helloservice:latest
 elif [ "${application_name}" = "response-service" ]; then
-  sudo docker run -d --name ${application_name} -p 5001:5001 -e INSTANCE_ID=$INSTANCE_ID ${dockerhub_id}/responseservice:latest
+  sudo docker run -d --name ${application_name} --network=host -e INSTANCE_ID=$INSTANCE_ID ${dockerhub_id}/responseservice:latest
 else
   echo "Unknown application name: ${application_name}"
 fi
@@ -51,3 +51,5 @@ curl -X PUT http://${consul_ip}:8500/v1/agent/service/register \
 -d "$API_PAYLOAD"
 
 sleep 10
+
+curl --request PUT --data '["Bello!", "Poopaye!", "Tulaliloo ti amo!"]' http://consul.service.consul:8500/v1/kv/minion_phrases

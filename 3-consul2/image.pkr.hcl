@@ -15,6 +15,10 @@ variable "region" {
   type = string
 }
 
+variable "dockerhub_id" {
+  type = string
+}
+
 data "amazon-ami" "hashistack" {
   filters = {
     architecture                       = "x86_64"
@@ -68,7 +72,7 @@ build {
   }
 
   provisioner "shell" {
-    environment_vars = ["CLOUD_ENV=aws"]
+    environment_vars = ["CLOUD_ENV=aws", "DOCKERHUB_ID=${var.dockerhub_id}"]
     script           = "./shared/scripts/setup.sh"
   }
 }

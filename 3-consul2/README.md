@@ -2,40 +2,46 @@
 # Part 3: Consul Integration
 
 ## Overview
-This part introduces Consul for service discovery, key-value (KV) storage, and mutual TLS between HelloService and ResponseService.
+This part introduces Consul for service discovery, and fault tollerance for HelloService and ResponseService.
 
---> amazon-ebs.hashistack: AMIs were created:
-us-east-1: ami-074e172bc7a69b3bd
+## Prerequisites
+1. **Tools Installed**:
+   - Terraform CLI
+   - jq cli `brew install jq`
+   - Packer cli
+2. **Packer generated AMI** (Pre-baked AMI with Consul Server, Consul Client, Docker Images, DNS Configuration):
+   - An AWS account with access keys configured.
+3. **Docker Images**
+   - Docker images compiled in last activity and available on docker-hub
 
 ## Steps to Run
 
 1. **Navigate to the Part 2 directory**:
    ```bash
-   cd Part2-ConsulIntegration
+   cd 3-consul2
    ```
 
-2. **Start Consul and Services**:
+2. **Building AMI using Packer**
    ```bash
-   docker-compose up --build
-   ```
-
-3. **Populate the Consul KV Store**:
-   Add Minion phrases to the KV store:
-   ```bash
-   curl --request PUT --data '["Bello!", "Poopaye!", "Tulaliloo ti amo!"]' http://localhost:8500/v1/kv/minion_phrases
+   packer init -var-file=variables.hcl image.pkr.hcl
+   packer build -var-file=variables.hcl image.pkr.hcl
    ```
 
 4. **Test the Services**:
    - Test **HelloService**:
      ```bash
-     curl http://localhost:5000/hello
+     curl http://localhost:5000/hello | jq
      ```
    - Expected Response:
      ```json
      {
-       "message": "Hello from HelloService!",
-       "minion_phrases": ["Bello!", "Poopaye!", "Tulaliloo ti amo!"],
-       "response_service": "Bello from ResponseService!"
+      "message": "Hello from HelloService!",
+      "minion_phrases": [
+         "Bello!",
+         "Poopaye!",
+         "Tulaliloo ti amo!"
+      ],
+      "response_message": "Bello from ResponseService i-05506b6e36d25223a!"
      }
      ```
 
