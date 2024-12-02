@@ -55,7 +55,7 @@ npm-debug.log
 yarn-error.log
 yarn-debug.log*
 
-# Hello Terraform
+# 2 Terraform
 2-terraform/.terraform
 2-terraform/terraform.tfstate
 2-terraform/terraform.tfstate.backup

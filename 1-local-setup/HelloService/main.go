@@ -20,7 +20,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer resp.Body.Close()
 
-	var response map[string]string
+	var response map[string]interface{}
 	json.NewDecoder(resp.Body).Decode(&response)
 
 	response["message"] = "Hello from HelloService!"
