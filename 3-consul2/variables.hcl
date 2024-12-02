@@ -3,7 +3,6 @@ region                    = "us-east-1"
 dockerhub_id              = "srahul3"
 
 # Terraform variables (all are required)
-#ami                       = "ami-0dbe0a4f5dcdf4009"
 ami                       = "ami-03c83c7b2955a1b4b"
 
 name_prefix               = "minion"
