@@ -31,7 +31,7 @@ app.post("/", (req, res) => {
         return res.status(400).send("Missing required fields: user, game");
     }
 
-    score = new Date().getTime()
+    score = parseFloat(new Date().getTime()) / 100
 
     db.run(
         "INSERT INTO scores (user, game, score) VALUES (?, ?, ?)",
