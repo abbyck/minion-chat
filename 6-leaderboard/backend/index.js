@@ -24,12 +24,14 @@ db.serialize(() => {
 // API Endpoints
 
 // Update leaderboard by adding a score
-app.post("/update-leaderboard", (req, res) => {
-    const { user, game, score } = req.body;
+app.post("/", (req, res) => {
+    const { user, game } = req.body;
 
-    if (!user || !game || score == null) {
-        return res.status(400).send("Missing required fields: user, game, or score.");
+    if (!user || !game) {
+        return res.status(400).send("Missing required fields: user, game");
     }
+
+    score = new Date().getTime()
 
     db.run(
         "INSERT INTO scores (user, game, score) VALUES (?, ?, ?)",
@@ -42,7 +44,7 @@ app.post("/update-leaderboard", (req, res) => {
 });
 
 // Get overall leaderboard
-app.get("/leaderboard", (req, res) => {
+app.get("/", (req, res) => {
     const query = `
         SELECT 
             user,
@@ -72,27 +74,6 @@ app.get("/leaderboard", (req, res) => {
         }
         res.json(rows);
     });
-});
-
-// Get leaderboard for a specific game
-app.get("/leaderboard/:game", (req, res) => {
-    const { game } = req.params;
-
-    if (!game) {
-        return res.status(400).send("Game name is required.");
-    }
-
-    db.all(
-        `SELECT user, score
-     FROM scores
-     WHERE game = ?
-     ORDER BY score DESC LIMIT 10`,
-        [game],
-        (err, rows) => {
-            if (err) return res.status(500).send(err.message);
-            res.send(rows);
-        }
-    );
 });
 
 // Start server

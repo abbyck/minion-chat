@@ -47,10 +47,10 @@
 </table>
 
 <script>
-    const API_URL = "http://localhost:3000";
+    const API_URL = "/api";
 
     setInterval(async function () {
-        const response = await fetch(`${API_URL}/leaderboard`);
+        const response = await fetch(`${API_URL}`);
         const leaderboard = await response.json();
         const leaderboardList = document.getElementById("leaderboard");
 
