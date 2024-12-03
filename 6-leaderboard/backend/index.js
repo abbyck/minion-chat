@@ -76,6 +76,26 @@ app.get("/", (req, res) => {
     });
 });
 
+app.get("/:game", (req, res) => {
+    const { game } = req.params;
+
+    if (!game) {
+        return res.status(400).send("Game name is required.");
+    }
+
+    db.all(
+        `SELECT user, score
+     FROM scores
+     WHERE game = ?
+     ORDER BY score ASC`,
+        [game],
+        (err, rows) => {
+            if (err) return res.status(500).send(err.message);
+            res.send(rows);
+        }
+    );
+});
+
 // Start server
 const PORT = 3000;
 app.listen(PORT, () => {
